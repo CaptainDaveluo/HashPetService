@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hashpet.dao.OrderItemMapper" >
+  <resultMap id="BaseResultMap" type="com.hashpet.pojo.OrderItem" >
+    <id column="ord_item_id" property="ordItemId" jdbcType="INTEGER" />
+    <result column="ord_id" property="ordId" jdbcType="INTEGER" />
+    <result column="ord_pro_id" property="ordProId" jdbcType="INTEGER" />
+    <result column="ord_num" property="ordNum" jdbcType="INTEGER" />
+    <result column="ord_single_p" property="ordSingleP" jdbcType="DECIMAL" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ord_item_id, ord_id, ord_pro_id, ord_num, ord_single_p
+  </sql>
+  <sql id="Union_Column_List" >
+    order_item.ord_item_id, order_item.ord_id, ord_pro_id, order_item.ord_num, ord_single_p
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from order_item
+    where ord_item_id = #{ordItemId,jdbcType=INTEGER}
+  </select>
+  <select id="queryOrderDetailByOrdId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Union_Column_List" />
+    from order_item,order_t
+    where order_t.ord_user_id = #{ordId,jdbcType=INTEGER}
+    and order_t.ord_id = order_item.ord_id
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from order_item
+    where ord_item_id = #{ordItemId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="java.util.List">
+    insert into order_item (ord_item_id, ord_id, ord_pro_id, 
+      ord_num, ord_single_p)
+    values
+    <foreach collection="list" item="BaseResultMap" index="index"
+             separator=",">
+      (#{BaseResultMap.ordItemId,},
+      #{BaseResultMap.ordId},
+      #{BaseResultMap.ordProId},
+      #{BaseResultMap.ordNum},
+      #{BaseResultMap.ordSingleP})
+    </foreach>
+  </insert>
+  <insert id="insertSelective" parameterType="com.hashpet.pojo.OrderItem" >
+    insert into order_item
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="ordItemId != null" >
+        ord_item_id,
+      </if>
+      <if test="ordId != null" >
+        ord_id,
+      </if>
+      <if test="ordProId != null" >
+        ord_pro_id,
+      </if>
+      <if test="ordNum != null" >
+        ord_num,
+      </if>
+      <if test="ordSingleP != null" >
+        ord_single_p,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="ordItemId != null" >
+        #{ordItemId,jdbcType=INTEGER},
+      </if>
+      <if test="ordId != null" >
+        #{ordId,jdbcType=INTEGER},
+      </if>
+      <if test="ordProId != null" >
+        #{ordProId,jdbcType=INTEGER},
+      </if>
+      <if test="ordNum != null" >
+        #{ordNum,jdbcType=INTEGER},
+      </if>
+      <if test="ordSingleP != null" >
+        #{ordSingleP,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hashpet.pojo.OrderItem" >
+    update order_item
+    <set >
+      <if test="ordId != null" >
+        ord_id = #{ordId,jdbcType=INTEGER},
+      </if>
+      <if test="ordProId != null" >
+        ord_pro_id = #{ordProId,jdbcType=INTEGER},
+      </if>
+      <if test="ordNum != null" >
+        ord_num = #{ordNum,jdbcType=INTEGER},
+      </if>
+      <if test="ordSingleP != null" >
+        ord_single_p = #{ordSingleP,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where ord_item_id = #{ordItemId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hashpet.pojo.OrderItem" >
+    update order_item
+    set ord_id = #{ordId,jdbcType=INTEGER},
+      ord_pro_id = #{ordProId,jdbcType=INTEGER},
+      ord_num = #{ordNum,jdbcType=INTEGER},
+      ord_single_p = #{ordSingleP,jdbcType=DECIMAL}
+    where ord_item_id = #{ordItemId,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hashpet.dao.ProductMapper" >
+  <resultMap id="BaseResultMap" type="com.hashpet.pojo.Product" >
+    <id column="pro_id" property="proId" jdbcType="INTEGER" />
+    <result column="pro_name" property="proName" jdbcType="VARCHAR" />
+    <result column="pro_tag" property="proTag" jdbcType="VARCHAR" />
+    <result column="pro_price" property="proPrice" jdbcType="DECIMAL" />
+    <result column="pro_intergral" property="proIntergral" jdbcType="INTEGER" />
+    <result column="pro_src" property="proSrc" jdbcType="VARCHAR" />
+    <result column="pro_shop_id" property="proShopId" jdbcType="INTEGER" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.hashpet.pojo.Product" extends="BaseResultMap" >
+    <result column="pro_brief" property="proBrief" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <resultMap id="DetailProInfo" type="com.hashpet.pojo.ProductSellDetail" extends="ResultMapWithBLOBs">
+        <result column="pro_stock" property="proStock" jdbcType="INTEGER" />
+        <result column="pro_visited" property="proVisited" jdbcType="INTEGER" />
+        <result column="pro_month_selled" property="proMonthSelled" jdbcType="INTEGER" />
+        <result column="pro_season_selled" property="proSeasonSelled" jdbcType="INTEGER" />
+        <result column="pro_total_selled" property="proTotalSelled" jdbcType="INTEGER" />
+        <result column="pro_priority" property="proPriority" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    pro_id, pro_name, pro_tag, pro_price, pro_intergral, pro_src, pro_shop_id
+  </sql>
+  <sql id="Blob_Column_List" >
+    pro_brief
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from product_t
+    where pro_id = #{proId,jdbcType=INTEGER}
+  </select>
+
+
+  <!--按优先级查询商品-->
+  <select id="queryByPriority" resultMap="DetailProInfo" parameterType="java.lang.Integer">
+      select
+      *
+      from product_t AS T, pro_info_detail AS D
+      <if test="limitNum!=null and limitNum!=0">
+        LIMIT
+        #{limitNum,jdbcType=INTEGER}
+      </if>
+  </select>
+
+  <!--随机获取一定数量的商品-->
+  <select id="queryByRandom" resultMap="DetailProInfo" parameterType="java.lang.Integer">
+    SELECT
+    *
+    from product_t AS T,pro_info_detail AS D
+    order by rand()
+    <if test="limitNum!=null and limitNum!=0">
+      LIMIT
+      #{limitNum,jdbcType=INTEGER}
+    </if>
+  </select>
+
+  <!--按条件查询商品-->
+  <select id="queryByConditions" resultMap="DetailProInfo" parameterType="java.util.Map" >
+    select
+    *
+    from product_t AS T,pro_info_detail AS D
+    <where>
+      1=1
+      <if test="params.proName!=null and params.proName !=''">
+        and  T.pro_name like '%${params.proName}%'
+      </if>
+      <if test="params.proTag!=null and params.proTag !=''">
+        and T.pro_tag = '${params.proTag}'
+      </if>
+      <if test="params.proPrice !=null and params.priceCompare!=null">
+        <![CDATA[<if test="params.priceCompare='<'">
+          and T.pro_price <= ${params.proPrice}
+        </if>]]>
+        <![CDATA[<if test="params.priceCompare='>'">
+          and T.pro_price > ${params.proPrice}
+        </if>]]>
+      </if>
+      <if test="params.proShopId != null and params.proShopId !=''">
+        and T.pro_shop_id = ${params.proShopId}
+      </if>
+      and T.pro_id=D.pro_id
+    </where>
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from product_t
+    where pro_id = #{proId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.hashpet.pojo.Product" >
+    <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="proId">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into product_t (pro_id, pro_name, pro_tag, 
+      pro_price, pro_intergral, pro_src, 
+      pro_shop_id, pro_brief)
+    values (#{proId,jdbcType=INTEGER}, #{proName,jdbcType=VARCHAR}, #{proTag,jdbcType=VARCHAR}, 
+      #{proPrice,jdbcType=DECIMAL}, #{proIntergral,jdbcType=INTEGER}, #{proSrc,jdbcType=VARCHAR}, 
+      #{proShopId,jdbcType=INTEGER}, #{proBrief,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hashpet.pojo.Product" >
+    insert into product_t
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="proId != null" >
+        pro_id,
+      </if>
+      <if test="proName != null" >
+        pro_name,
+      </if>
+      <if test="proTag != null" >
+        pro_tag,
+      </if>
+      <if test="proPrice != null" >
+        pro_price,
+      </if>
+      <if test="proIntergral != null" >
+        pro_intergral,
+      </if>
+      <if test="proSrc != null" >
+        pro_src,
+      </if>
+      <if test="proShopId != null" >
+        pro_shop_id,
+      </if>
+      <if test="proBrief != null" >
+        pro_brief,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="proId != null" >
+        #{proId,jdbcType=INTEGER},
+      </if>
+      <if test="proName != null" >
+        #{proName,jdbcType=VARCHAR},
+      </if>
+      <if test="proTag != null" >
+        #{proTag,jdbcType=VARCHAR},
+      </if>
+      <if test="proPrice != null" >
+        #{proPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="proIntergral != null" >
+        #{proIntergral,jdbcType=INTEGER},
+      </if>
+      <if test="proSrc != null" >
+        #{proSrc,jdbcType=VARCHAR},
+      </if>
+      <if test="proShopId != null" >
+        #{proShopId,jdbcType=INTEGER},
+      </if>
+      <if test="proBrief != null" >
+        #{proBrief,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hashpet.pojo.Product" >
+    update product_t
+    <set >
+      <if test="proName != null" >
+        pro_name = #{proName,jdbcType=VARCHAR},
+      </if>
+      <if test="proTag != null" >
+        pro_tag = #{proTag,jdbcType=VARCHAR},
+      </if>
+      <if test="proPrice != null" >
+        pro_price = #{proPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="proIntergral != null" >
+        pro_intergral = #{proIntergral,jdbcType=INTEGER},
+      </if>
+      <if test="proSrc != null" >
+        pro_src = #{proSrc,jdbcType=VARCHAR},
+      </if>
+      <if test="proShopId != null" >
+        pro_shop_id = #{proShopId,jdbcType=INTEGER},
+      </if>
+      <if test="proBrief != null" >
+        pro_brief = #{proBrief,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where pro_id = #{proId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.hashpet.pojo.Product" >
+    update product_t
+    set pro_name = #{proName,jdbcType=VARCHAR},
+      pro_tag = #{proTag,jdbcType=VARCHAR},
+      pro_price = #{proPrice,jdbcType=DECIMAL},
+      pro_intergral = #{proIntergral,jdbcType=INTEGER},
+      pro_src = #{proSrc,jdbcType=VARCHAR},
+      pro_shop_id = #{proShopId,jdbcType=INTEGER},
+      pro_brief = #{proBrief,jdbcType=LONGVARCHAR}
+    where pro_id = #{proId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hashpet.pojo.Product" >
+    update product_t
+    set pro_name = #{proName,jdbcType=VARCHAR},
+      pro_tag = #{proTag,jdbcType=VARCHAR},
+      pro_price = #{proPrice,jdbcType=DECIMAL},
+      pro_intergral = #{proIntergral,jdbcType=INTEGER},
+      pro_src = #{proSrc,jdbcType=VARCHAR},
+      pro_shop_id = #{proShopId,jdbcType=INTEGER}
+    where pro_id = #{proId,jdbcType=INTEGER}
+  </update>
+</mapper>

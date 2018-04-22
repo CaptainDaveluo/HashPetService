@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hashpet.dao.OrderMapper" >
+  <resultMap id="BaseResultMap" type="com.hashpet.pojo.Order" >
+    <id column="ord_id" property="ordId" jdbcType="INTEGER" />
+    <result column="ord_num" property="ordNum" jdbcType="VARCHAR" />
+    <result column="ord_addr" property="ordAddr" jdbcType="VARCHAR" />
+    <result column="ord_price" property="ordPrice" jdbcType="DECIMAL" />
+    <result column="ord_shop_id" property="ordShopId" jdbcType="INTEGER" />
+    <result column="ord_user_id" property="ordUserId" jdbcType="INTEGER" />
+    <result column="ord_type" property="ordType" jdbcType="INTEGER" />
+    <result column="ord_time" property="ordTime" jdbcType="DATE" />
+    <result column="ord_status" property="ordStatus" jdbcType="INTEGER" />
+    <result column="ord_phone" property="ordPhone" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ord_id, ord_num, ord_addr, ord_price, ord_shop_id, ord_user_id, ord_type, ord_time, 
+    ord_status, ord_phone
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from order_t
+    where ord_id = #{ordId,jdbcType=INTEGER}
+  </select>
+  <select id="queryOrderByUserId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from order_t
+    where ord_user_id = #{userId,jdbcType=INTEGER}
+    AND
+    ord_time>=(CURDATE()   -    INTERVAL   3   MONTH  )
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from order_t
+    where ord_id = #{ordId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.hashpet.pojo.Order">
+    <selectKey resultType="integer" keyProperty="ordId" order="AFTER">
+      SELECT
+      LAST_INSERT_ID()
+    </selectKey>
+    insert into order_t (ord_id, ord_num, ord_addr, 
+      ord_price, ord_shop_id, ord_user_id, 
+      ord_type, ord_time, ord_status, 
+      ord_phone)
+    values (#{ordId,jdbcType=INTEGER}, #{ordNum,jdbcType=VARCHAR}, #{ordAddr,jdbcType=VARCHAR}, 
+      #{ordPrice,jdbcType=DECIMAL}, #{ordShopId,jdbcType=INTEGER}, #{ordUserId,jdbcType=INTEGER}, 
+      #{ordType,jdbcType=INTEGER}, #{ordTime,jdbcType=DATE}, #{ordStatus,jdbcType=INTEGER}, 
+      #{ordPhone,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hashpet.pojo.Order" >
+    insert into order_t
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="ordId != null" >
+        ord_id,
+      </if>
+      <if test="ordNum != null" >
+        ord_num,
+      </if>
+      <if test="ordAddr != null" >
+        ord_addr,
+      </if>
+      <if test="ordPrice != null" >
+        ord_price,
+      </if>
+      <if test="ordShopId != null" >
+        ord_shop_id,
+      </if>
+      <if test="ordUserId != null" >
+        ord_user_id,
+      </if>
+      <if test="ordType != null" >
+        ord_type,
+      </if>
+      <if test="ordTime != null" >
+        ord_time,
+      </if>
+      <if test="ordStatus != null" >
+        ord_status,
+      </if>
+      <if test="ordPhone != null" >
+        ord_phone,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="ordId != null" >
+        #{ordId,jdbcType=INTEGER},
+      </if>
+      <if test="ordNum != null" >
+        #{ordNum,jdbcType=VARCHAR},
+      </if>
+      <if test="ordAddr != null" >
+        #{ordAddr,jdbcType=VARCHAR},
+      </if>
+      <if test="ordPrice != null" >
+        #{ordPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="ordShopId != null" >
+        #{ordShopId,jdbcType=INTEGER},
+      </if>
+      <if test="ordUserId != null" >
+        #{ordUserId,jdbcType=INTEGER},
+      </if>
+      <if test="ordType != null" >
+        #{ordType,jdbcType=INTEGER},
+      </if>
+      <if test="ordTime != null" >
+        #{ordTime,jdbcType=DATE},
+      </if>
+      <if test="ordStatus != null" >
+        #{ordStatus,jdbcType=INTEGER},
+      </if>
+      <if test="ordPhone != null" >
+        #{ordPhone,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hashpet.pojo.Order" >
+    update order_t
+    <set >
+      <if test="ordNum != null" >
+        ord_num = #{ordNum,jdbcType=VARCHAR},
+      </if>
+      <if test="ordAddr != null" >
+        ord_addr = #{ordAddr,jdbcType=VARCHAR},
+      </if>
+      <if test="ordPrice != null" >
+        ord_price = #{ordPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="ordShopId != null" >
+        ord_shop_id = #{ordShopId,jdbcType=INTEGER},
+      </if>
+      <if test="ordUserId != null" >
+        ord_user_id = #{ordUserId,jdbcType=INTEGER},
+      </if>
+      <if test="ordType != null" >
+        ord_type = #{ordType,jdbcType=INTEGER},
+      </if>
+      <if test="ordTime != null" >
+        ord_time = #{ordTime,jdbcType=DATE},
+      </if>
+      <if test="ordStatus != null" >
+        ord_status = #{ordStatus,jdbcType=INTEGER},
+      </if>
+      <if test="ordPhone != null" >
+        ord_phone = #{ordPhone,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ord_id = #{ordId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hashpet.pojo.Order" >
+    update order_t
+    set ord_num = #{ordNum,jdbcType=VARCHAR},
+      ord_addr = #{ordAddr,jdbcType=VARCHAR},
+      ord_price = #{ordPrice,jdbcType=DECIMAL},
+      ord_shop_id = #{ordShopId,jdbcType=INTEGER},
+      ord_user_id = #{ordUserId,jdbcType=INTEGER},
+      ord_type = #{ordType,jdbcType=INTEGER},
+      ord_time = #{ordTime,jdbcType=DATE},
+      ord_status = #{ordStatus,jdbcType=INTEGER},
+      ord_phone = #{ordPhone,jdbcType=VARCHAR}
+    where ord_id = #{ordId,jdbcType=INTEGER}
+  </update>
+</mapper>

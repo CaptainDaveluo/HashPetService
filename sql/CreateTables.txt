@@ -1,0 +1,146 @@
+#用户表
+create table user_t(
+	`userId` int(11) NOT NULL AUTO_INCREMENT,
+  	`userName` varchar(40),
+	`nickName` varchar(40) NOT NULL,
+  	`passWord` varchar(255) NOT NULL,
+	`phoneNum` varchar(11) NOT NULL,
+	`userType` varchar(2) NOT NULL,
+	`gender` varchar(2) NOT NULL,
+	`city` varchar(40),
+  	`age` int(4),
+	intergral int(11) NOT NULL DEFAULT 0,
+	head varchar(255),
+  	PRIMARY KEY (`userId`)
+)default charset = utf8;
+
+#商品表
+create table product_t(
+	`pro_id` int(11) NOT NULL AUTO_INCREMENT,
+  	`pro_name` varchar(40) NOT NULL,
+	`pro_tag` varchar(40),
+  	`pro_price` dec(11,2) NOT NULL,
+	`pro_intergral` int(11) NOT NULL DEFAULT 0,
+	`pro_src` varchar(255) NOT NULL,
+	`pro_brief` longtext NOT NULL,
+	`pro_shop_id` int(11) NOT NULL,
+  	PRIMARY KEY (`pro_id`)
+)default charset = utf8;
+
+#订单表
+create table order_t(
+	`ord_id` int(11) NOT NULL AUTO_INCREMENT,
+  	`ord_num` varchar(255) NOT NULL,
+	`ord_addr` varchar(255) NOT NULL,
+  	`ord_price` dec(11,2) NOT NULL,
+	`ord_shop_id` int(11) NOT NULL,
+	`ord_user_id` int(11) NOT NULL,
+	`ord_type` int(2) NOT NULL,
+	`ord_time` date,
+	`ord_status` int(2) NOT NULL DEFAULT 0,
+	`ord_phone` varchar(11) NOT NULL,
+  	PRIMARY KEY (`ord_id`)
+)default charset = utf8;
+
+#订单明细表
+create table order_item(
+    `ord_item_id` int(11) NOT NULL AUTO_INCREMENT,      #订单明细编号
+    `ord_id` int(11) NOT NULL,                          #对应订单编号
+    `ord_pro_id` int(11) NOT NULL,                      #商品(服务)编号
+    `ord_num` int(11),                                  #数量
+    `ord_single_p` dec(6,2),                             #单价
+    PRIMARY KEY (`ord_item_id`)
+)default charset = utf8;
+
+#宠物参数表
+create table pet_info(
+    `pet_id` int(11) NOT NULL AUTO_INCREMENT,           #宠物编号
+    `pet_name` varchar(40) NOT NULL,                    #宠物名称
+    `pet_gender` varchar(2),                            #性别
+    `pet_color` varchar(10),                            #颜色
+    `pet_pro_id` int(11),                               #关联商品表
+    `pet_class` varchar(40),                            #品种
+    `pet_length` int(11),                               #长度(厘米)
+    `pet_age` int(11),                                  #年龄
+    `pet_hot_level` int(11),                            #热度,1~5星
+    PRIMARY KEY (`pet_id`)
+)default charset = utf8;
+
+#资源定位表
+create table url_t(
+    `url_id` varchar(255) NOT NULL ,   #URL编号
+    `url_str` varchar(255) NOT NULL,            #URL值
+    `url_type` int,         #定位类型,1为商品图片，2为萌宠圈图片资源，3为萌宠圈视频资源
+    `url_targetid` int,         #商品id或圈子id
+    PRIMARY KEY (`url_id`)
+)default charset = utf8;
+
+#萌宠圈内容
+create table pet_circle(
+    `circle_id` int(11) NOT NULL AUTO_INCREMENT,    #圈子id
+    `user_id` int(11) NOT NULL,                     #发布用户id
+    `text_content` longtext NOT NULL,               #文本内容
+    `comment_num` int(11),                          #评论数
+    `support_num` int(11),                          #点赞数
+    PRIMARY KEY (`circle_id`)
+)default charset = utf8;
+
+#评论明细表
+create table comment(
+    `comment_id` int(11) NOT NULL AUTO_INCREMENT,    #评论id
+    `circle_id` int(11) NOT NULL,                     #圈子id
+    `text_content` longtext,                        #文本内容
+    `user_id`   int(11),                            #评论用户id
+    PRIMARY KEY (`comment_id`)
+)default charset = utf8;
+
+#点赞明细表
+create table upvote(
+    `support_id` int(11) NOT NULL AUTO_INCREMENT,     #点赞id
+    `circle_id` int(11) NOT NULL,                     #圈子id
+    `user_id` int(11)   NOT NULL,                     #点赞用户id
+    PRIMARY KEY (`support_id`)
+)default charset = utf8;
+
+#订单评价表
+create table order_evaluate(
+    `ord_com_id` int(11) NOT NULL AUTO_INCREMENT,   #订单评论id
+    `ord_id` int(11) NOT NULL,                      #订单id
+    `text_content` longtext,                        #文本内容
+    `user_id` int(11),                              #评论用户id
+    `com_level` int(4),                             #评价等级，1~5
+    PRIMARY KEY (`ord_com_id`)
+)default charset = utf8;
+
+#聊天明细表
+create table char_msg(
+    `message_id` int(11) NOT NULL AUTO_INCREMENT,   #聊天信息id
+    `from_user_id` int NOT NULL,                    #发起用户id
+    `to_user_id` int NOT NULL,                      #发送至用户id
+    `status` int NOT NULL,                          #消息状态,0为未读，1为已读
+    `message_text` longtext,                        #消息内容
+    PRIMARY KEY (`message_id`)
+)default charset = utf8;
+
+
+create table facilitator(#服务商信息表
+    `shop_id` int(11) NOT NULL AUTO_INCREMENT,      #服务商id
+    `shop_name`  varchar(255),                      #商铺名称
+    `belong_user_id` int(11) NOT NULL,              #所属用户id
+    `shop_brief` longtext,                          #商家介绍
+    `phone_num`  varchar(11),                       #联系电话
+    `address`   varchar(255),                       #所在地址
+    `city`   varchar(40),                           #所在城市
+    PRIMARY KEY (`shop_id`)
+)default charset = utf8;
+
+create table pro_info_detail(#销量及库存明细表
+    `pro_id` int(11) NOT NULL AUTO_INCREMENT,       #服务商id
+    `pro_stock`  int(11),                           #商品库存
+    `pro_visited` int(11) default 0,                          #浏览量
+    `pro_month_selled` int(11) default 0,                     #月销量
+    `pro_season_selled`  int(11) default 0,                   #季度销量
+    `pro_total_selled`   int(11) default 0,                   #总销量
+    `pro_priority`       int(11) default 0,                   #排行优先级，越大排行越靠前
+    PRIMARY KEY (`pro_id`)
+)default charset = utf8;
