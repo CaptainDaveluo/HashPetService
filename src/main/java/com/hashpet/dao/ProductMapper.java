@@ -29,4 +29,6 @@ public interface ProductMapper {
     List<ProductSellDetail> queryByRandom(@Param("limitNum") Integer limitNum);
 
     List<ProductSellDetail> queryByConditions(@Param("params") Map<String,Object> params);
+
+    List<ProductSellDetail> queryByOrderNum(@Param("ordNum") String ordNum);
 }

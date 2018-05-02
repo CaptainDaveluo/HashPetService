@@ -16,5 +16,6 @@ public interface IProductService {
     public void    createProductSellDetail(ProductSellDetail detail);
     public List<ProductSellDetail> queryByParams(Map<String,Object> params);
     public List<ProductSellDetail> queryByPriority(Integer limitNum);
+    public List<ProductSellDetail> queryByOrderNum(String orderNum);
     public List<ProductSellDetail> queryByRandom(Integer limitNum);
 }

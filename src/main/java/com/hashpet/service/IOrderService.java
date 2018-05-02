@@ -11,7 +11,9 @@ public interface IOrderService {
     public Order queryOrderByNum(Order order);
     public List<Order> queryOrderByPhone(Order order);
     public List<Order> queryOrderByUserId(Integer userId);
-    public List<OrderItem> queryOrderDetailByOrdId(Integer userId);
-    public void updateOrder(Order order);
+    public List<OrderItem> queryOrderDetailByUserId(Integer userId);
+    public List<Order> queryOrderBySellerId(Integer sellerId);
+    public List<OrderItem> queryOrderDetailBySellerId(Integer userId);
+    public void updateOrderByNum(Order order);
     public  void dropOrder(Integer ordId);
 }

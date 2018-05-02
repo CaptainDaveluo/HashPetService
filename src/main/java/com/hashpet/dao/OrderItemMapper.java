@@ -19,5 +19,7 @@ public interface OrderItemMapper {
 
     int updateByPrimaryKey(OrderItem record);
 
-    List<OrderItem> queryOrderDetailByOrdId(Integer ordId);
+    List<OrderItem> queryOrderDetailByUserId(Integer userId);
+
+    List<OrderItem> queryOrderDetailBySellerId(Integer sellerId);
 }

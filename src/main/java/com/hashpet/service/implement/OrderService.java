@@ -39,12 +39,20 @@ public class OrderService implements IOrderService{
         return orderMapper.queryOrderByUserId(userId);
     }
 
-    public List<OrderItem> queryOrderDetailByOrdId(Integer userId) {
-        return orderItemMapper.queryOrderDetailByOrdId(userId);
+    public List<OrderItem> queryOrderDetailByUserId(Integer userId) {
+        return orderItemMapper.queryOrderDetailByUserId(userId);
     }
 
-    public void updateOrder(Order order) {
+    public List<Order> queryOrderBySellerId(Integer sellerId) {
+        return orderMapper.queryOrderBySellerId(sellerId);
+    }
 
+    public List<OrderItem> queryOrderDetailBySellerId(Integer sellerId) {
+        return orderItemMapper.queryOrderDetailBySellerId(sellerId);
+    }
+
+    public void updateOrderByNum(Order order) {
+        orderMapper.updateByNumSelective(order);
     }
 
     public void dropOrder(Integer ordId) {

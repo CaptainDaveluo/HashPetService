@@ -32,6 +32,8 @@ public class OrderController {
     @Qualifier("productService")
     private IProductService productService;
 
+    private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+
     @RequestMapping("/newOrder")
     public String newOrder(HttpServletRequest request,Model model){
         String ordType = request.getParameter("ordType");
@@ -39,6 +41,7 @@ public class OrderController {
         String ordUserId = request.getParameter("ordUserId");
         String ordPhone = request.getParameter("ordPhone");
         String details = request.getParameter("details");
+        Double totalPrice = Double.parseDouble(request.getParameter("totalPrice"));
         JSONObject json = new JSONObject();
         try{
             //解析传入的订单详情
@@ -59,6 +62,7 @@ public class OrderController {
                 String orderNum = "G"+ordUserId+date.getTime();
                 order.setOrdNum(orderNum);
                 order.setOrdStatus(0);
+                order.setOrdPrice(totalPrice);
                 orderService.newOrder(order);
                 List<OrderItem> items =new ArrayList<OrderItem>();
                 //解析订单详情
@@ -91,40 +95,12 @@ public class OrderController {
     @RequestMapping("/showUserOrder")
     public String showUserOrder(HttpServletRequest request){
         String strUserId = request.getParameter("userId");
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
         Integer userId = Integer.parseInt(strUserId);
         try {
             List<Order> orders = orderService.queryOrderByUserId(userId);
-            List<OrderItem> details = orderService.queryOrderDetailByOrdId(userId);
+            List<OrderItem> details = orderService.queryOrderDetailByUserId(userId);
             JSONObject json = new JSONObject();
-            JSONArray datas = new JSONArray();
-            for (int i = 0; i < orders.size(); i++) {
-                JSONObject orderData = new JSONObject();
-                Order order = orders.get(i);
-                JSONArray arrayOrder;
-                List<OrderItem> items = new ArrayList<OrderItem>();
-                for (int j = 0; j < details.size(); j++) {
-                    OrderItem item = details.get(j);
-                    if (order.getOrdId() == item.getOrdId()) {
-                        items.add(item);
-                    }
-                }
-                Product p = productService.queryProductById(details.get(0).getOrdProId());
-                arrayOrder = JSONArray.fromObject(items);
-                orderData.put("ordId", order.getOrdId());
-                orderData.put("ordNum", order.getOrdNum());
-                orderData.put("ordPhone", order.getOrdPhone());
-                orderData.put("ordStatus", order.getOrdStatus());
-                orderData.put("ordUserId", order.getOrdUserId());
-                orderData.put("ordAddr", order.getOrdAddr());
-                orderData.put("ordType", order.getOrdType());
-                orderData.put("ordPrice", order.getOrdPrice());
-                orderData.put("ordShopId", order.getOrdShopId());
-                orderData.put("ordTime", sdf.format(order.getOrdTime()));
-                orderData.put("ordGoodsName",p.getProName());
-                orderData.put("items", arrayOrder);
-                datas.add(orderData);
-            }
+            JSONArray datas=generateOrder(orders,details);
             json.put("status", "OK");
             json.put("result", datas);
             json.put("message", "订单信息列表");
@@ -133,5 +109,94 @@ public class OrderController {
             logger.error("查询用户订单过程出错:"+e.getMessage());
         }
         return "showResult";
+    }
+
+
+    @RequestMapping("/showSellerOreder")
+    public String showSellerOreder(HttpServletRequest request){
+        String strSellerId = request.getParameter("sellerId");
+        Integer sellerId = Integer.parseInt(strSellerId);
+        try {
+            List<Order> orders = orderService.queryOrderBySellerId(sellerId);
+            List<OrderItem> details = orderService.queryOrderDetailBySellerId(sellerId);
+            JSONObject json = new JSONObject();
+            JSONArray datas=generateOrder(orders,details);
+            json.put("status", "OK");
+            json.put("result", datas);
+            json.put("message", "订单信息列表");
+            request.setAttribute("result", json);
+        }catch (Exception e){
+            logger.error("查询订单过程出错:"+e.getMessage());
+        }
+        return "showResult";
+    }
+
+    private JSONArray generateOrder(List<Order> orders,List<OrderItem> details){
+        JSONArray datas = new JSONArray();
+        for (int i = 0; i < orders.size(); i++) {
+            JSONObject orderData = new JSONObject();
+            Order order = orders.get(i);
+            JSONArray arrayOrder;
+            List<OrderItem> items = new ArrayList<OrderItem>();
+            for (int j = 0; j < details.size(); j++) {
+                OrderItem item = details.get(j);
+                if (order.getOrdId() == item.getOrdId()) {
+                    items.add(item);
+                }
+            }
+            Product p = productService.queryProductById(details.get(0).getOrdProId());
+            arrayOrder = JSONArray.fromObject(items);
+            orderData.put("ordId", order.getOrdId());
+            orderData.put("ordNum", order.getOrdNum());
+            orderData.put("ordPhone", order.getOrdPhone());
+            orderData.put("ordStatus", order.getOrdStatus());
+            orderData.put("ordUserId", order.getOrdUserId());
+            orderData.put("ordAddr", order.getOrdAddr());
+            orderData.put("ordType", order.getOrdType());
+            orderData.put("ordPrice", order.getOrdPrice());
+            orderData.put("ordShopId", order.getOrdShopId());
+            orderData.put("ordTime", sdf.format(order.getOrdTime()));
+            orderData.put("ordGoodsName",p.getProName());
+            orderData.put("items", arrayOrder);
+            datas.add(orderData);
+        }
+        return datas;
+    }
+
+
+    @RequestMapping("/sendOffOrder")
+    public String sendOffOrder(HttpServletRequest request){
+        String orderNum = request.getParameter("orderNum");
+        Order order = new Order();
+        order.setOrdNum(orderNum);
+        order.setOrdStatus(1);
+        doUpdateOderStatus(order,request);
+        return "showResult";
+    }
+
+    @RequestMapping("/comfirmOrder")
+    public String comfirmOrder(HttpServletRequest request){
+        String orderNum = request.getParameter("orderNum");
+        Order order = new Order();
+        order.setOrdNum(orderNum);
+        order.setOrdStatus(2);
+        doUpdateOderStatus(order,request);
+        return "showResult";
+    }
+
+    public void doUpdateOderStatus(Order order,HttpServletRequest request){
+        JSONObject json = new JSONObject();
+        try {
+            orderService.updateOrderByNum(order);
+            json.put("status", "OK");
+            json.put("result", "发货成功");
+            json.put("message", "订单发货");
+            request.setAttribute("result", json);
+        }catch (Exception e){
+            json.put("status", "FAIL");
+            json.put("result", "发货失败");
+            json.put("message", "订单发货");
+            request.setAttribute("result", json);
+        }
     }
 }

@@ -9,7 +9,7 @@ public class Order {
     private Integer ordId;         //订单id
     private String  ordNum;        //订单编号
     private String  ordAddr;       //订单地址
-    private double  ordPrice;      //订单总价
+    private Double  ordPrice;      //订单总价
     private Integer ordShopId;    //商家id
     private Integer ordUserId;    //客户id
     private Integer ordType;       //订单类型,1为商品订单，2为线下服务订单
@@ -42,11 +42,11 @@ public class Order {
         this.ordAddr = ordAddr;
     }
 
-    public double getOrdPrice() {
+    public Double getOrdPrice() {
         return ordPrice;
     }
 
-    public void setOrdPrice(double ordPrice) {
+    public void setOrdPrice(Double ordPrice) {
         this.ordPrice = ordPrice;
     }
 

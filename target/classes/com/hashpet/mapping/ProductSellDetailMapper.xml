@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hashpet.dao.ProductSellDetailMapper" >
+  <resultMap id="BaseResultMap" type="com.hashpet.pojo.ProductSellDetail" >
+    <id column="pro_id" property="proId" jdbcType="INTEGER" />
+    <result column="pro_stock" property="proStock" jdbcType="INTEGER" />
+    <result column="pro_visited" property="proVisited" jdbcType="INTEGER" />
+    <result column="pro_month_selled" property="proMonthSelled" jdbcType="INTEGER" />
+    <result column="pro_season_selled" property="proSeasonSelled" jdbcType="INTEGER" />
+    <result column="pro_total_selled" property="proTotalSelled" jdbcType="INTEGER" />
+    <result column="pro_priority" property="proPriority" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    pro_id, pro_stock, pro_visited, pro_month_selled, pro_season_selled, pro_total_selled, 
+    pro_priority
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from pro_info_detail
+    where pro_id = #{proId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from pro_info_detail
+    where pro_id = #{proId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.hashpet.pojo.ProductSellDetail" >
+    insert into pro_info_detail (pro_id, pro_stock, pro_visited, 
+      pro_month_selled, pro_season_selled, pro_total_selled, 
+      pro_priority)
+    values (#{proId,jdbcType=INTEGER}, #{proStock,jdbcType=INTEGER}, #{proVisited,jdbcType=INTEGER}, 
+      #{proMonthSelled,jdbcType=INTEGER}, #{proSeasonSelled,jdbcType=INTEGER}, #{proTotalSelled,jdbcType=INTEGER}, 
+      #{proPriority,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hashpet.pojo.ProductSellDetail" >
+    insert into pro_info_detail
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="proId != null" >
+        pro_id,
+      </if>
+      <if test="proStock != null" >
+        pro_stock,
+      </if>
+      <if test="proVisited != null" >
+        pro_visited,
+      </if>
+      <if test="proMonthSelled != null" >
+        pro_month_selled,
+      </if>
+      <if test="proSeasonSelled != null" >
+        pro_season_selled,
+      </if>
+      <if test="proTotalSelled != null" >
+        pro_total_selled,
+      </if>
+      <if test="proPriority != null" >
+        pro_priority,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="proId != null" >
+        #{proId,jdbcType=INTEGER},
+      </if>
+      <if test="proStock != null" >
+        #{proStock,jdbcType=INTEGER},
+      </if>
+      <if test="proVisited != null" >
+        #{proVisited,jdbcType=INTEGER},
+      </if>
+      <if test="proMonthSelled != null" >
+        #{proMonthSelled,jdbcType=INTEGER},
+      </if>
+      <if test="proSeasonSelled != null" >
+        #{proSeasonSelled,jdbcType=INTEGER},
+      </if>
+      <if test="proTotalSelled != null" >
+        #{proTotalSelled,jdbcType=INTEGER},
+      </if>
+      <if test="proPriority != null" >
+        #{proPriority,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hashpet.pojo.ProductSellDetail" >
+    update pro_info_detail
+    <set >
+      <if test="proStock != null" >
+        pro_stock = #{proStock,jdbcType=INTEGER},
+      </if>
+      <if test="proVisited != null" >
+        pro_visited = #{proVisited,jdbcType=INTEGER},
+      </if>
+      <if test="proMonthSelled != null" >
+        pro_month_selled = #{proMonthSelled,jdbcType=INTEGER},
+      </if>
+      <if test="proSeasonSelled != null" >
+        pro_season_selled = #{proSeasonSelled,jdbcType=INTEGER},
+      </if>
+      <if test="proTotalSelled != null" >
+        pro_total_selled = #{proTotalSelled,jdbcType=INTEGER},
+      </if>
+      <if test="proPriority != null" >
+        pro_priority = #{proPriority,jdbcType=INTEGER},
+      </if>
+    </set>
+    where pro_id = #{proId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hashpet.pojo.ProductSellDetail" >
+    update pro_info_detail
+    set pro_stock = #{proStock,jdbcType=INTEGER},
+      pro_visited = #{proVisited,jdbcType=INTEGER},
+      pro_month_selled = #{proMonthSelled,jdbcType=INTEGER},
+      pro_season_selled = #{proSeasonSelled,jdbcType=INTEGER},
+      pro_total_selled = #{proTotalSelled,jdbcType=INTEGER},
+      pro_priority = #{proPriority,jdbcType=INTEGER}
+    where pro_id = #{proId,jdbcType=INTEGER}
+  </update>
+</mapper>

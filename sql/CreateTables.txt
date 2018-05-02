@@ -1,3 +1,7 @@
+create database db_hashpet default charset=utf8;
+
+use db_hashpet
+
 #用户表
 create table user_t(
 	`userId` int(11) NOT NULL AUTO_INCREMENT,

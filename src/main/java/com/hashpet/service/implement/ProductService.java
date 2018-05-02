@@ -53,4 +53,7 @@ public class ProductService implements IProductService{
     }
 
 
+    public List<ProductSellDetail> queryByOrderNum(String orderNum) {
+        return productMapper.queryByOrderNum(orderNum);
+    }
 }

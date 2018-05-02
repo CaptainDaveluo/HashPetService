@@ -20,5 +20,9 @@ public interface OrderMapper {
 
     int updateByPrimaryKey(Order record);
 
+    int updateByNumSelective(Order record);
+
     List<Order> queryOrderByUserId(Integer userId);
+
+    List<Order> queryOrderBySellerId(Integer sellerId);
 }

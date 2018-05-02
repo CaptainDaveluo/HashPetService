@@ -183,4 +183,24 @@ public class ProductController {
         return "showResult";
     }
 
+
+    @RequestMapping("/getOrderGoods")
+    public String getOrderGoods(HttpServletRequest request){
+        String orderNum =request.getParameter("orderNum");
+        JSONObject json = new JSONObject();
+        try {
+            List<ProductSellDetail> results = productService.queryByOrderNum(orderNum);
+            json.put("status","OK");
+            json.put("message","获取商品列表信息成功");
+            JSONArray jsonResults = JSONArray.fromObject(results);
+            json.put("result",jsonResults);
+        }catch (Exception e){
+            json.put("status","FAIL");
+            json.put("message","获取商品列表信息失败");
+            json.put("result","NULL");
+            logger.error("查询失败"+e.getMessage());
+        }
+        request.setAttribute("result",json);
+        return "showResult";
+    }
 }
