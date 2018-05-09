@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hashpet.dao.FacilitatorMapper" >
+  <resultMap id="BaseResultMap" type="com.hashpet.pojo.Facilitator" >
+    <id column="shop_id" property="shopId" jdbcType="INTEGER" />
+    <result column="shop_name" property="shopName" jdbcType="VARCHAR" />
+    <result column="belong_user_id" property="belongUserId" jdbcType="INTEGER" />
+    <result column="phone_num" property="phoneNum" jdbcType="VARCHAR" />
+    <result column="address" property="address" jdbcType="VARCHAR" />
+    <result column="city" property="city" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.hashpet.pojo.Facilitator" extends="BaseResultMap" >
+    <result column="shop_brief" property="shopBrief" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    shop_id, shop_name, belong_user_id, phone_num, address, city
+  </sql>
+  <sql id="Blob_Column_List" >
+    shop_brief
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from facilitator
+    where shop_id = #{shopId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from facilitator
+    where shop_id = #{shopId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.hashpet.pojo.Facilitator" >
+    insert into facilitator (shop_id, shop_name, belong_user_id, 
+      phone_num, address, city, 
+      shop_brief)
+    values (#{shopId,jdbcType=INTEGER}, #{shopName,jdbcType=VARCHAR}, #{belongUserId,jdbcType=INTEGER}, 
+      #{phoneNum,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}, 
+      #{shopBrief,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hashpet.pojo.Facilitator" >
+    insert into facilitator
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="shopId != null" >
+        shop_id,
+      </if>
+      <if test="shopName != null" >
+        shop_name,
+      </if>
+      <if test="belongUserId != null" >
+        belong_user_id,
+      </if>
+      <if test="phoneNum != null" >
+        phone_num,
+      </if>
+      <if test="address != null" >
+        address,
+      </if>
+      <if test="city != null" >
+        city,
+      </if>
+      <if test="shopBrief != null" >
+        shop_brief,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="shopId != null" >
+        #{shopId,jdbcType=INTEGER},
+      </if>
+      <if test="shopName != null" >
+        #{shopName,jdbcType=VARCHAR},
+      </if>
+      <if test="belongUserId != null" >
+        #{belongUserId,jdbcType=INTEGER},
+      </if>
+      <if test="phoneNum != null" >
+        #{phoneNum,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null" >
+        #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="shopBrief != null" >
+        #{shopBrief,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hashpet.pojo.Facilitator" >
+    update facilitator
+    <set >
+      <if test="shopName != null" >
+        shop_name = #{shopName,jdbcType=VARCHAR},
+      </if>
+      <if test="belongUserId != null" >
+        belong_user_id = #{belongUserId,jdbcType=INTEGER},
+      </if>
+      <if test="phoneNum != null" >
+        phone_num = #{phoneNum,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null" >
+        city = #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="shopBrief != null" >
+        shop_brief = #{shopBrief,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where shop_id = #{shopId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.hashpet.pojo.Facilitator" >
+    update facilitator
+    set shop_name = #{shopName,jdbcType=VARCHAR},
+      belong_user_id = #{belongUserId,jdbcType=INTEGER},
+      phone_num = #{phoneNum,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR},
+      city = #{city,jdbcType=VARCHAR},
+      shop_brief = #{shopBrief,jdbcType=LONGVARCHAR}
+    where shop_id = #{shopId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hashpet.pojo.Facilitator" >
+    update facilitator
+    set shop_name = #{shopName,jdbcType=VARCHAR},
+      belong_user_id = #{belongUserId,jdbcType=INTEGER},
+      phone_num = #{phoneNum,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR},
+      city = #{city,jdbcType=VARCHAR}
+    where shop_id = #{shopId,jdbcType=INTEGER}
+  </update>
+</mapper>
